@@ -62,8 +62,18 @@ classKeyMap =
 	Tab: 'TAB'
 	Escape: 'ESC'
 
+germanClassKeyMap =
+	Grave: 'ö'
+	Apostrophe: 'ä'
+	SemiColon: 'ü'
+	BracketOpen: 'ß'
+	BracketClose: '´'
+	Equals: '+'
+	
+
 keyClassMap = {}
 keyClassMap[v] = k for k, v of classKeyMap
+keyClassMap[v] = k for k, v of germanClassKeyMap
 keyClass = (key)-> if voidKey key then 'void' else keyClassMap[(key or '').split(' ')[0]] or (key or '').trim()
 
 
@@ -716,7 +726,7 @@ Terran-color = #c61818
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-40271514-1', 'github.io');
+ga('create', 'UA-57073194-1', 'github.io');
 ga('send', 'pageview');
 '''
 
@@ -810,7 +820,7 @@ ga('send', 'pageview');
 			p -> 'The Core is designed to be used with your off-hand on the side of your keyboard closest to your mouse, with a tilted keyboard to keep your wrist straight.'
 			img src:'pull-keys.jpg'
 			p -> 'You\'ll need to press Shift, Ctrl and Shift-Ctrl a lot, so you may want to remove the keys between Alt and Ctrl.'
-			a '.select-chameleon', -> "If you're on a laptop or can't tilt your keyboard, try The Chameleon instead."
+			a '.select-corelite', -> "If you're on a laptop or can't tilt your keyboard, try The Core Lite instead."
 			h3 'There are left- and right-handed variants, and layouts for each race as well as a generic Random layout.'
 			p -> 'Are you right- or left-handed?'
 			a '.select-hand.hand-Right', -> 'Right-Handed'
@@ -855,8 +865,8 @@ ga('send', 'pageview');
 						$('select.hotkey-file').val(TheCore.layoutCodeToDisplayName(code)).change()
 						$('.tutorial-overlay').click()
 
-					$('.select-chameleon').click ->
-						$('select.hotkey-file').val("The Chameleon").change()
+					$('.select-corelite').click ->
+						$('select.hotkey-file').val("The Core Lite").change()
 						$('.tutorial-overlay').click()
 
 					$('.select-hand').click ->
@@ -873,7 +883,7 @@ ga('send', 'pageview');
 							do dismiss
 		div '.footer', ->
 			a '.show-tutorial', -> 'Show Tutorial'
-			a href:'https://github.com/cushman/thecorevisualizer', target: 'blank', -> 'About'
+			a href:'https://github.com/IvanVolosyuk/thecorevisualizer', target: 'blank', -> 'About'
 			coffeescript ->
 				$('.footer .show-tutorial').on 'click', -> $('.tutorial,.tutorial-overlay').show()
 
@@ -928,6 +938,7 @@ ga('send', 'pageview');
 					loadHotkeysFile TheCore.layoutCodeToDisplayName(code), path
 
 				if keyboard is 'USQwerty'
+					loadHotkeysFile "The Core Lite", 'others/TheCore Lite.SC2Hotkeys'
 					loadHotkeysFile "The Chameleon", 'others/Chameleon 2.0.SC2Hotkeys'
 					loadHotkeysFile "HotS Standard", 'others/Standard.SC2Hotkeys'
 
@@ -986,8 +997,8 @@ ga('send', 'pageview');
 					if text
 						message = $ "<h3 class='#{kind}'>#{text}</h3>"
 						$('.messages').append message
-						setTimeout (->message.addClass 'hide'), 0
-						setTimeout (->message.remove()), 2000
+						setTimeout (->message.addClass 'hide'), 1000
+						setTimeout (->message.remove()), 5000
 
 				class Unit
 					constructor:(@race, @kind, @name)->

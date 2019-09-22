@@ -337,36 +337,41 @@ exports.commandCards = commandCards =
 			Move:
 				displayText: 'Move'
 				icon: 'Move.png'
-				if: -> not (@buildCard or @hallucinateCard or @rooted or @burrowed or @sieged)
+				if: -> not (@buildCard or @hallucinateCard or @burrowed or @sieged or @unrooted is no)
 			HoldPosition:
 				hotkeyCode: 'MoveHoldPosition'
 				displayText: 'Hold Position'
 				icon: 'HoldPosition.png'
-				if: -> not (@buildCard or @hallucinateCard or @rooted or @burrowed or @sieged)
+				if: -> not (@buildCard or @hallucinateCard or @burrowed or @sieged or @unrooted is no)
 			Patrol:
 				hotkeyCode: 'MovePatrol'
 				displayText: 'Patrol'
 				icon: 'Patrol.png'
-				if: -> not (@buildCard or @hallucinateCard or @rooted or @burrowed or @sieged)
+				if: -> not (@buildCard or @hallucinateCard or @burrowed or @sieged or @unrooted is no)
 			Stop:
 				displayText: 'Stop'
 				icon: 'Stop.png'
-				if: -> not (@buildCard or @hallucinateCard or @rooted or @burrowed or @sieged)
+				if: -> not (@buildCard or @hallucinateCard or @burrowed or @unrooted is no)
 		combat:
 			Attack:
 				displayText: 'Attack'
 				icon: 'Attack.png'
-				if: -> not (@buildCard or @hallucinateCard or @burrowed)
+				if: -> not (@buildCard or @hallucinateCard or @unrooted or @burrowed)
+			Stop:
+				displayText: 'Stop'
+				icon: 'Stop.png'
+				if: -> not (@buildCard or @hallucinateCard or @unrooted or @burrowed)
 		cancel:
 			Cancel:
 				displayText: 'Cancel'
 				icon: 'Cancel.png'
+				if: -> not @lifted
 		burrow:
 			Burrow:
 				icon: 'Burrow.gif'
 				hotkeyCode: 'BurrowDown'
 				displayText: 'Burrow'
-				if: -> not @burrowed
+				if: -> not (@buildCard or @burrowed)
 				on: -> @burrowed = yes
 			Unburrow:
 				icon: 'Unburrow.gif'
@@ -374,7 +379,24 @@ exports.commandCards = commandCards =
 				displayText: 'Unburrow'
 				if: -> @burrowed
 				on: -> @burrowed = no
-	building:
+		load:
+			BunkerLoad:
+				icon: 'Load.png'
+				hotkeyCode: 'BunkerLoad'
+				displayText: 'Load'
+			BunkerUnloadAll:
+				icon: 'UnloadAll.jpg'
+				hotkeyCode: 'BunkerUnloadAll'
+				displayText: 'Unload All'
+		underconstruction:
+			Halt:
+				icon: 'Stop.png'
+				hotkeyCode: 'Halt'
+				displayText: 'Halt construction'
+			SelectBuilder:
+				icon: 'Selectbuilder.png'
+				hotkeyCode: 'SelectBuilder'
+				displayText: 'Select Builder'
 		flying:
 			Liftoff:
 				icon: 'Lift.png'
@@ -383,19 +405,48 @@ exports.commandCards = commandCards =
 				if: -> @upgrade isnt 'PlanetaryFortress' and not @lifted
 				on: -> @lifted = yes
 			Land:
-				icon: 'Land.png'
+				icon: 'Land.jpg'
 				hotkeyCode: 'Land'
-				displayText: 'Land Building'
+				displayText: 'Land'
 				if: -> @lifted
 				on: -> @lifted = no
 			Move:
-				displayText: 'Move'
 				icon: 'Move.png'
+				hotkeyCode: 'Move'
+				displayText: 'Move'
+				if: -> @lifted
+			Patrol:
+				icon: 'Patrol.png'
+				hotkeyCode: 'MovePatrol'
+				displayText: 'Patrol'
 				if: -> @lifted
 			Stop:
-				displayText: 'Stop'
 				icon: 'Stop.png'
+				hotkeyCode: 'Stop'
+				displayText: 'Stop'
 				if: -> @lifted
+		worker:
+			ReturnCargo:
+				icon: 'ReturnCargo.png'
+				hotkeyCode: 'ReturnCargo'
+				displayText: 'Return Cargo'
+				if: -> not @buildCard
+			Gather:
+				icon: "Gather.png"
+				hotkeyCode: "GatherProt"
+				displayText: "Gather"
+				if: -> not @buildCard
+		rally:
+			Rally:
+				icon: 'Rally.jpg'
+				hotkeyCode: 'Rally'
+				displayText: 'Rally'
+				if: -> not @buildCard
+		archonWarp:
+			AWrp:
+				icon: "AWrp.png"
+				hotkeyCode: "AWrp"
+				displayText: "Archon Warp"
 
 
 for n in [0..9]
@@ -443,17 +494,12 @@ exports.raceCards = raceCards =
 				icon: "probe.jpg"
 				displayText: "Probe"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.worker']
 					Cancel:
 						displayText: 'Cancel'
 						icon: 'Cancel.png'
 						on: -> @buildCard = null
 						if: -> @buildCard
-					Gather:
-						icon: "Gather.png"
-						hotkeyCode: "GatherProt"
-						displayText: "Gather"
-						if: -> not @buildCard
 
 					BuildBasic:
 						displayText: 'Build Basic'
@@ -524,47 +570,41 @@ exports.raceCards = raceCards =
 						if: -> @buildCard is 'advanced'
 
 					BuildRoboticsBay:
-						icon: "RoboticsBay.jpg"
+						icon: "roboticsbay.jpg"
 						hotkeyCode: "RoboticsBay/Probe"
 						displayText: "Build Robotics Bay"
 						if: -> @buildCard is 'advanced'
 
 					BuildRoboticsFacility:
-						icon: "RoboticsFacility.jpg"
+						icon: "roboticsfacility.jpg"
 						hotkeyCode: "RoboticsFacility/Probe"
 						displayText: "Build Robotics Facility"
 						if: -> @buildCard is 'advanced'
 
 					BuildStargate:
-						icon: "Stargate.jpg"
+						icon: "stargate.jpg"
 						hotkeyCode: "Stargate/Probe"
 						displayText: "Build Stargate"
 						if: -> @buildCard is 'advanced'
 
 					BuildTwilightCouncil:
-						icon: "TwilightCouncil.jpg"
+						icon: "twilightcouncil.jpg"
 						hotkeyCode: "TwilightCouncil/Probe"
 						displayText: "Build Twilight Council"
 						if: -> @buildCard is 'advanced'
 
 					BuildTemplarArchive:
-						icon: "TemplarArchive.jpg"
+						icon: "templararchive.jpg"
 						hotkeyCode: "TemplarArchive/Probe"
 						displayText: "Build Templar Archive"
 						if: -> @buildCard is 'advanced'
-
-					ReturnCargo:
-						icon: "ReturnCargo.png"
-						hotkeyCode: "ReturnCargo"
-						displayText: "Return Cargo"
-						if: -> not @buildCard
 
 
 			Zealot:
 				icon: "zealot.jpg"
 				displayText: "Zealot"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.rally']
 					Charge:
 						icon: "Charge.png"
 						hotkeyCode: "Charge/Zealot"
@@ -575,7 +615,7 @@ exports.raceCards = raceCards =
 				icon: "stalker.jpg"
 				displayText: "Stalker"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.rally']
 					Blink:
 						icon: "Blink.png"
 						hotkeyCode: "Blink/Stalker"
@@ -585,12 +625,7 @@ exports.raceCards = raceCards =
 				icon: "hightemplar.jpg"
 				displayText: "High Templar"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
-					AWrp:
-						icon: "AWrp.png"
-						hotkeyCode: "AWrp"
-						displayText: "Archon Warp"
-
+					inherit: ['unit.movement', 'unit.combat', 'unit.rally', 'unit.archonWarp']
 					Feedback:
 						icon: "Feedback.png"
 						hotkeyCode: "Feedback/HighTemplar"
@@ -605,68 +640,67 @@ exports.raceCards = raceCards =
 				icon: "darktemplar.jpg"
 				displayText: "Dark Templar"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.rally', 'unit.archonWarp']
 
 			Oracle:
 				icon: "oracle.jpg"
 				displayText: "Oracle"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					LightofAiur:
 						icon: "Envision.png"
 						hotkeyCode: "LightofAiur/Oracle"
-						displayText: "Lightof Aiur"
+						displayText: "Envision"
 
 					OracleRevelation:
 						icon: "OracleRevelation.png"
 						hotkeyCode: "OracleRevelation/Oracle"
-						displayText: "Oracle Revelation"
+						displayText: "Revelation"
 
 					OracleWeaponOff:
-						icon: "OracleWeaponOff.png"
+						icon: "PulsarBeamOff.jpg"
 						hotkeyCode: "OracleWeaponOff/Oracle"
-						displayText: "Oracle Weapon Off"
+						displayText: "Deactivate Pulsar Beam"
+						on: -> @weapon = no
+						if: -> @weapon
 
 					OracleWeaponOn:
-						icon: "OracleWeaponOn.png"
+						icon: "PulsarBeam.png"
 						hotkeyCode: "OracleWeaponOn/Oracle"
-						displayText: "Oracle Weapon On"
+						displayText: "Activate Pulsar Beam"
+						on: -> @weapon = yes
+						if: -> not @weapon
 
 			MothershipCore:
 				icon: "mothershipcore.jpg"
 				displayText: "Mothership Core"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
-					MassRecall:
-						icon: "MassRecall.png"
-						hotkeyCode: "MassRecall/MothershipCore"
-						displayText: "Mass Recall"
-
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					MorphToMothership:
 						icon: "MorphToMothership.png"
 						hotkeyCode: "MorphToMothership/MothershipCore"
 						displayText: "Morph To Mothership"
 
 					MothershipCoreMassRecall:
-						icon: "MothershipCoreMassRecall.png"
+						icon: "MassRecall.png"
 						hotkeyCode: "MothershipCoreMassRecall/MothershipCore"
-						displayText: "Mothership Core Mass Recall"
+						displayText: "Mass Recall"
 
 					MothershipCoreWeapon:
 						icon: "MothershipCoreWeapon.png"
 						hotkeyCode: "MothershipCoreWeapon/MothershipCore"
-						displayText: "Mothership Core Weapon"
+						displayText: "Photon Overcharge"
 
 					TemporalField:
 						icon: "TemporalField.png"
 						hotkeyCode: "TemporalField/MothershipCore"
-						displayText: "Temporal Field"
+						displayText: "Time Warp"
 
 			Phoenix:
 				icon: "phoenix.jpg"
 				displayText: "Phoenix"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					GravitonBeam:
 						icon: "GravitonBeam.png"
 						hotkeyCode: "GravitonBeam/Phoenix"
@@ -676,7 +710,7 @@ exports.raceCards = raceCards =
 				icon: "warpprism.jpg"
 				displayText: "Warp Prism"
 				commands:
-					inherit: ['unit.movement']
+					inherit: ['unit.movement', 'unit.load']
 					PhasingMode:
 						icon: "PhasingMode.png"
 						hotkeyCode: "PhasingMode/WarpPrism"
@@ -691,7 +725,7 @@ exports.raceCards = raceCards =
 				icon: "sentry.jpg"
 				displayText: "Sentry"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.rally']
 					Cancel:
 						icon: "Cancel.png"
 						hotkeyCode: "Cancel"
@@ -699,13 +733,13 @@ exports.raceCards = raceCards =
 						if: -> @hallucinateCard
 						on: -> @hallucinateCard = no
 					ArchonHallucination:
-						icon: "ArchonHallucination.png"
+						icon: "archon.jpg"
 						hotkeyCode: "ArchonHallucination/Sentry"
 						displayText: "Archon Hallucination"
 						if: -> @hallucinateCard
 
 					ColossusHallucination:
-						icon: "ColossusHallucination.png"
+						icon: "colossus.jpg"
 						hotkeyCode: "ColossusHallucination/Sentry"
 						displayText: "Colossus Hallucination"
 						if: -> @hallucinateCard
@@ -717,7 +751,7 @@ exports.raceCards = raceCards =
 						if: -> not @hallucinateCard
 
 					GuardianShield:
-						icon: "GuardianShield.png"
+						icon: "GuardianShield.gif"
 						hotkeyCode: "GuardianShield/Sentry"
 						displayText: "Guardian Shield"
 						if: -> not @hallucinateCard
@@ -797,9 +831,9 @@ exports.raceCards = raceCards =
 				icon: "carrier.jpg"
 				displayText: "Carrier"
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					Interceptor:
-						icon: "Interceptor.png"
+						icon: "TrainInterceptors.gif"
 						hotkeyCode: "Interceptor/Carrier"
 						displayText: "Interceptor"
 
@@ -807,7 +841,7 @@ exports.raceCards = raceCards =
 				icon: "mothership.jpg"
 				displayText: "Mothership"
 				commands:
-					inherit: ['unit.movement']
+					inherit: ['unit.movement', 'unit.cancel']
 					MassRecall:
 						icon: "MassRecall.png"
 						hotkeyCode: "MassRecall/Mothership"
@@ -816,23 +850,14 @@ exports.raceCards = raceCards =
 					TemporalField:
 						icon: "TemporalField.png"
 						hotkeyCode: "TemporalField/Mothership"
-						displayText: "Temporal Field"
-
-					Vortex:
-						icon: "Vortex.png"
-						hotkeyCode: "Vortex/Mothership"
-						displayText: "Vortex"
-
-					VortexKO:
-						icon: "VortexKO.png"
-						hotkeyCode: "VortexKO/Mothership"
-						displayText: "Vortex KO"
+						displayText: "Time Warp"
 
 		buildings:
 			Nexus:
 				icon: "nexus.jpg"
 				displayText: "Nexus"
 				commands:
+					inherit: ['unit.cancel', 'unit.combat', 'unit.rally']
 					MothershipCore:
 						icon: "mothershipcore.jpg"
 						hotkeyCode: "MothershipCore/Nexus"
@@ -852,6 +877,7 @@ exports.raceCards = raceCards =
 				icon: "gateway.jpg"
 				displayText: "Gateway"
 				commands:
+					inherit: ['unit.cancel', 'unit.rally']
 					DarkTemplar:
 						icon: "darktemplar.jpg"
 						hotkeyCode: "DarkTemplar"
@@ -881,11 +907,16 @@ exports.raceCards = raceCards =
 						icon: "zealot.jpg"
 						hotkeyCode: "Zealot"
 						displayText: "Zealot"
+					Sentry:
+						icon: "sentry.jpg"
+						hotkeyCode: "Sentry"
+						displayText: "Sentry"
 
 			Forge:
 				icon: "forge.jpg"
 				displayText: "Forge"
 				commands:
+					inherit: ['unit.cancel']
 					ProtossGroundArmorLevel1:
 						icon: "ProtossGroundArmorLevel1.gif"
 						hotkeyCode: "ProtossGroundArmorLevel1/Forge"
@@ -905,12 +936,13 @@ exports.raceCards = raceCards =
 				icon: "photoncannon.jpg"
 				displayText: "Photon Cannon"
 				commands:
-					inherit: ['unit.combat']
+					inherit: ['unit.combat', 'unit.cancel']
 
 			CyberneticsCore:
 				icon: "cyberneticscore.jpg"
 				displayText: "Cybernetics Core"
 				commands:
+					inherit: ['unit.cancel']
 					ProtossAirArmorLevel1:
 						icon: "ProtossAirArmorLevel1.gif"
 						hotkeyCode: "ProtossAirArmorLevel1/CyberneticsCore"
@@ -930,6 +962,7 @@ exports.raceCards = raceCards =
 				icon: "roboticsfacility.jpg"
 				displayText: "Robotics Facility"
 				commands:
+					inherit: ['unit.cancel', 'unit.rally']
 					Colossus:
 						icon: "colossus.jpg"
 						hotkeyCode: "Colossus/RoboticsFacility"
@@ -954,6 +987,7 @@ exports.raceCards = raceCards =
 				icon: "roboticsbay.jpg"
 				displayText: "Robotics Bay"
 				commands:
+					inherit: ['unit.cancel']
 					ResearchExtendedThermalLance:
 						icon: "ColossusRange.gif"
 						hotkeyCode: "ResearchExtendedThermalLance/RoboticsBay"
@@ -973,6 +1007,7 @@ exports.raceCards = raceCards =
 				icon: "stargate.jpg"
 				displayText: "Stargate"
 				commands:
+					inherit: ['unit.cancel', 'unit.rally']
 					Carrier:
 						icon: "carrier.jpg"
 						hotkeyCode: "Carrier/Stargate"
@@ -1007,37 +1042,40 @@ exports.raceCards = raceCards =
 				icon: "twilightcouncil.jpg"
 				displayText: "Twilight Council"
 				commands:
+					inherit: ['unit.cancel']
 					ResearchCharge:
 						icon: "Charge.png"
-						hotkeyCode: "ResearchCharge"
+						hotkeyCode: "ResearchCharge/TwilightCouncil"
 						displayText: "Research Charge"
 
 					ResearchStalkerTeleport:
 						icon: "Blink.png"
-						hotkeyCode: "ResearchStalkerTeleport"
+						hotkeyCode: "ResearchStalkerTeleport/TwilightCouncil"
 						displayText: "Research Blink"
 
 			TemplarArchive:
 				icon: "templararchive.jpg"
 				displayText: "Templar Archive"
 				commands:
+					inherit: ['unit.cancel']
 					ResearchPsiStorm:
 						icon: "PsiStorm.png"
-						hotkeyCode: "ResearchPsiStorm"
+						hotkeyCode: "ResearchPsiStorm/TemplarArchive"
 						displayText: "Research Psi Storm"
 
 			FleetBeacon:
 				icon: "fleetbeacon.jpg"
 				displayText: "Fleet Beacon"
 				commands:
+					inherit: ['unit.cancel']
 					AnionPulseCrystals:
 						icon: "AnionPulseCrystals.png"
-						hotkeyCode: "AnionPulseCrystals"
+						hotkeyCode: "AnionPulseCrystals/FleetBeacon"
 						displayText: "Phoenix Range"
 
 					ResearchInterceptorLaunchSpeedUpgrade:
-						icon: "ResearchInterceptorLaunchSpeedUpgrade.png"
-						hotkeyCode: "ResearchInterceptorLaunchSpeedUpgrade"
+						icon: "GravitonCatapult.gif"
+						hotkeyCode: "ResearchInterceptorLaunchSpeedUpgrade/FleetBeacon"
 						displayText: "Interceptor Launch Speed"
 
 	Terran:
@@ -1046,16 +1084,11 @@ exports.raceCards = raceCards =
 				icon: 'scv.jpg'
 				displayText: 'SCV'
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.worker']
 					Repair:
 						icon: 'Repair.png'
-						hotkeyCode: 'Repair/SCV'
+						hotkeyCode: 'Repair'
 						displayText: 'Repair'
-						if: -> not @buildCard
-					ReturnCargo:
-						icon: 'ReturnCargo.png'
-						hotkeyCode: 'ReturnCargo/SCV'
-						displayText: 'Return Cargo'
 						if: -> not @buildCard
 					Build:
 						icon: 'Build.png'
@@ -1102,7 +1135,7 @@ exports.raceCards = raceCards =
 						displayText: 'Build Missile Turret'
 						if: -> @buildCard is 'basic'
 					Refinery:
-						icon: 'refinery.png'
+						icon: 'Refinary.png'
 						hotkeyCode: 'Refinery/SCV'
 						displayText: 'Refinery'
 						if: -> @buildCard is 'basic'
@@ -1135,7 +1168,7 @@ exports.raceCards = raceCards =
 						icon: 'sensortower.jpg'
 						hotkeyCode: 'SensorTower/SCV'
 						displayText: 'Build Sensor Tower'
-						if: -> @buildCard is 'advanced'
+						if: -> @buildCard is 'basic'
 					BuildStarport:
 						icon: 'starport.jpg'
 						hotkeyCode: 'Starport/SCV'
@@ -1168,9 +1201,9 @@ exports.raceCards = raceCards =
 				icon: 'ghost.jpg'
 				displayText: 'Ghost'
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					CloakOff:
-						icon: 'CloakOff.png'
+						icon: 'Decloack.jpg'
 						hotkeyCode: 'CloakOff'
 						displayText: 'Cloak Off'
 						if: -> @cloaked
@@ -1206,10 +1239,6 @@ exports.raceCards = raceCards =
 				displayText: 'Widow Mine'
 				commands:
 					inherit: ['unit.movement']
-					WidowMineAttack:
-						icon: 'WidowMineAttack.png'
-						hotkeyCode: 'WidowMineAttack/WidowMine'
-						displayText: 'Widow Mine Attack'
 					WidowMineBurrow:
 						icon: 'WidowMineBurrow.png'
 						hotkeyCode: 'WidowMineBurrow/WidowMine'
@@ -1217,7 +1246,7 @@ exports.raceCards = raceCards =
 						if: -> not @burrowed
 						on: -> @burrowed = yes
 					WidowMineUnburrow:
-						icon: 'WidowMineUnburrow.png'
+						icon: 'WidowMineUnburrow.jpg'
 						hotkeyCode: 'WidowMineUnburrow/WidowMine'
 						displayText: 'Widow Mine Unburrow'
 						if: -> @burrowed
@@ -1260,19 +1289,19 @@ exports.raceCards = raceCards =
 				icon: 'thor.jpg'
 				displayText: 'Thor'
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
-					'250mmStrikeCannons':
-						icon: '250mmStrikeCannons.png'
-						hotkeyCode: '250mmStrikeCannons/Thor'
-						displayText: '250mm Strike Cannons'
-					'330mmBarrageCannons':
-						icon: '330mmBarrageCannons.png'
-						hotkeyCode: '330mmBarrageCannons/Thor'
-						displayText: '330mm Barrage Cannons'
-					ExplosiveMode:
-						icon: 'ExplosiveMode.png'
-						hotkeyCode: 'ExplosiveMode/Thor'
-						displayText: 'Explosive Mode'
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
+					'ArmorpiercingMode':
+						icon: 'HighImpactPayload.png'
+						hotkeyCode: 'ArmorpiercingMode'
+						displayText: 'High Impact Payload'
+						if: -> not @highimpact
+						on: -> @highimpact = yes
+					ExplosivePayload:
+						icon: 'ExplosivePayload.png'
+						hotkeyCode: 'ExplosiveMode'
+						displayText: 'Explosive Payload'
+						if: -> @highimpact
+						on: -> @highimpact = no
 			Viking:
 				icon: 'viking.jpg'
 				displayText: 'Viking'
@@ -1280,12 +1309,16 @@ exports.raceCards = raceCards =
 					inherit: ['unit.movement', 'unit.combat']
 					AssaultMode:
 						icon: 'AssaultMode.png'
-						hotkeyCode: 'AssaultMode/Viking'
+						hotkeyCode: 'AssaultMode'
 						displayText: 'Assault Mode'
+						if: -> not @fightermode
+						on: -> @fightermode = yes
 					FighterMode:
 						icon: 'FighterMode.png'
-						hotkeyCode: 'FighterMode/Viking'
+						hotkeyCode: 'FighterMode'
 						displayText: 'Fighter Mode'
+						if: -> @fightermode
+						on: -> @fightermode = no
 			Raven:
 				icon: 'raven.jpg'
 				displayText: 'Raven'
@@ -1317,7 +1350,7 @@ exports.raceCards = raceCards =
 				commands:
 					inherit: ['unit.movement', 'unit.combat']
 					CloakOff:
-						icon: 'CloakOff.png'
+						icon: 'Decloack.jpg'
 						hotkeyCode: 'CloakOff'
 						displayText: 'Cloak Off'
 						if: -> @cloaked
@@ -1332,7 +1365,7 @@ exports.raceCards = raceCards =
 				icon: 'medivac.jpg'
 				displayText: 'Medivac'
 				commands:
-					inherit: ['unit.movement']
+					inherit: ['unit.movement', 'unit.load']
 					Heal:
 						icon: 'Heal.png'
 						hotkeyCode: 'Heal/Medivac'
@@ -1355,28 +1388,22 @@ exports.raceCards = raceCards =
 				icon: 'commandcenter.jpg'
 				displayText: 'Command Center'
 				commands:
-					inherit: ['building.flying']
-					Liftoff:
-						icon: 'Lift.png'
-						hotkeyCode: 'Lift'
-						displayText: 'Lift Off'
-						if: -> @upgrade isnt 'PlanetaryFortress' and not @lifted
-						on: -> @lifted = yes
+					inherit: ['unit.flying', 'unit.cancel']
 					CommandCenterLoad:
-						icon: 'CommandCenterLoad.png'
-						hotkeyCode: 'CommandCenterLoad/CommandCenter'
+						icon: 'Load.gif'
+						hotkeyCode: 'CommandCenterLoad'
 						displayText: 'Command Center Load'
 						if: -> @upgrade isnt 'OrbitalCommand'
 					CommandCenterUnloadAll:
-						icon: 'CommandCenterUnloadAll.png'
-						hotkeyCode: 'CommandCenterUnloadAll/CommandCenter'
+						icon: 'UnloadAll.jpg'
+						hotkeyCode: 'CommandCenterUnloadAll'
 						displayText: 'Command Center Unload All'
 						if: -> @upgrade isnt 'OrbitalCommand'
 					BuildOrbitalCommand:
 						icon: 'orbitalcommand.jpg'
 						hotkeyCode: 'OrbitalCommand/CommandCenter'
 						displayText: 'Build Orbital Command'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'OrbitalCommand'
 					BuildSCV:
 						icon: 'scv.jpg'
@@ -1388,23 +1415,23 @@ exports.raceCards = raceCards =
 						icon: 'planetaryfortress.jpg'
 						hotkeyCode: 'UpgradeToPlanetaryFortress/CommandCenter'
 						displayText: 'Upgrade To Planetary Fortress'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'PlanetaryFortress'
 					CalldownMULE:
 						icon: 'CalldownMULE.png'
 						hotkeyCode: 'CalldownMULE/OrbitalCommand'
 						displayText: 'Calldown MULE'
-						if: -> @upgrade is 'OrbitalCommand'
+						if: -> @upgrade is 'OrbitalCommand' and not @lifted
 					Scan:
 						icon: 'Scan.png'
 						hotkeyCode: 'Scan/OrbitalCommand'
 						displayText: 'Scan'
-						if: -> @upgrade is 'OrbitalCommand'
+						if: -> @upgrade is 'OrbitalCommand' and not @lifted
 					SupplyDrop:
 						icon: 'SupplyDrop.png'
 						hotkeyCode: 'SupplyDrop/OrbitalCommand'
 						displayText: 'Supply Drop'
-						if: -> @upgrade is 'OrbitalCommand'
+						if: -> @upgrade is 'OrbitalCommand' and not @lifted
 					Attack:
 						icon: 'Attack.png'
 						hotkeyCode: 'Attack'
@@ -1414,19 +1441,20 @@ exports.raceCards = raceCards =
 						icon: 'Stop.png'
 						hotkeyCode: 'StopPlanetaryFortress/PlanetaryFortress'
 						displayText: 'Stop'
-						if: -> @upgrade is 'PlanetaryFortress'
+						if: -> @upgrade is 'PlanetaryFortress' or @lifted
 			SupplyDepot:
 				icon: 'supplydepot.jpg'
 				displayText: 'Supply Depot'
 				commands:
+					inherit: ['unit.cancel', 'unit.underconstruction']
 					Lower:
-						icon: 'Lower.png'
+						icon: 'Lower.gif'
 						hotkeyCode: 'Lower/SupplyDepot'
 						displayText: 'Lower Supply Depot'
 						if: -> not @lowered
 						on: -> @lowered = yes
 					Raise:
-						icon: 'Raise.png'
+						icon: 'supplydepot.jpg'
 						hotkeyCode: 'Raise/SupplyDepotLowered'
 						displayText: 'Raise Supply Depot'
 						if: -> @lowered
@@ -1435,403 +1463,266 @@ exports.raceCards = raceCards =
 				icon: 'barracks.jpg'
 				displayText: 'Barracks'
 				commands:
-					inherit: ['building.flying']
+					inherit: ['unit.flying', 'unit.cancel']
 					BuildGhost:
 						icon: 'ghost.jpg'
 						hotkeyCode: 'Ghost/Barracks'
 						displayText: 'Build Ghost'
+						if: -> not @lifted
 					BuildMarauder:
 						icon: 'marauder.jpg'
 						hotkeyCode: 'Marauder/Barracks'
 						displayText: 'Build Marauder'
+						if: -> not @lifted
 					BuildMarine:
 						icon: 'marine.jpg'
 						hotkeyCode: 'Marine/Barracks'
 						displayText: 'Build Marine'
+						if: -> not @lifted
 					BuildReactor:
 						icon: 'reactor.jpg'
 						hotkeyCode: 'Reactor/Barracks'
 						displayText: 'Build Reactor'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'Reactor'
 					BuildReaper:
 						icon: 'reaper.jpg'
 						hotkeyCode: 'Reaper/Barracks'
 						displayText: 'Build Reaper'
+						if: -> not @lifted
 					BuildTechLab:
 						icon: 'techlab.jpg'
 						hotkeyCode: 'TechLabBarracks/Barracks'
 						displayText: 'Build Tech Lab'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'TechLab'
 			BarracksTechLab:
 				icon: 'barrackstechlab.jpg'
 				displayText: 'Barracks Tech Lab'
 				commands:
-					ReaperSpeed:
-						icon: 'ReaperSpeed.png'
-						hotkeyCode: 'ReaperSpeed/BarracksTechLab'
-						displayText: 'Reaper Speed'
-					ResearchG4Charge:
-						icon: 'ResearchG4Charge.png'
-						hotkeyCode: 'ResearchG4Charge/BarracksTechLab'
-						displayText: 'Research G4Charge'
-					ResearchIncineratorNozzles:
-						icon: 'ResearchIncineratorNozzles.png'
-						hotkeyCode: 'ResearchIncineratorNozzles/BarracksTechLab'
-						displayText: 'Research Incinerator Nozzles'
-					ResearchJackhammerConcussionGrenade:
-						icon: 'ResearchJackhammerConcussionGrenade.png'
-						hotkeyCode: 'ResearchJackhammerConcussionGrenade/BarracksTechLab'
-						displayText: 'Research Jackhammer Concussion Grenade'
-					ResearchPunisherGrenades:
-						icon: 'ResearchPunisherGrenades.png'
-						hotkeyCode: 'ResearchPunisherGrenades/BarracksTechLab'
-						displayText: 'Research Punisher Grenades'
-					ResearchShieldWall:
-						icon: 'ResearchShieldWall.png'
-						hotkeyCode: 'ResearchShieldWall/BarracksTechLab'
-						displayText: 'Research Shield Wall'
-					ResearchStabilizerMedPacks:
-						icon: 'ResearchStabilizerMedPacks.png'
-						hotkeyCode: 'ResearchStabilizerMedPacks/BarracksTechLab'
-						displayText: 'Research Stabilizer Med Packs'
+					inherit: ['unit.cancel']
 					ResearchStimpack:
 						icon: 'Stim.png'
 						hotkeyCode: 'Stimpack/BarracksTechLab'
 						displayText: 'Research Stimpack'
+					ResearchShieldWall:
+						icon: 'CombatShield.png'
+						hotkeyCode: 'ResearchShieldWall/BarracksTechLab'
+						displayText: 'Research Combat Shield'
+					ResearchPunisherGrenades:
+						icon: 'ConcussiveShells.png'
+						hotkeyCode: 'ResearchPunisherGrenades/BarracksTechLab'
+						displayText: 'Research Concussive Shells'
 			Bunker:
 				icon: 'bunker.jpg'
 				displayText: 'Bunker'
 				commands:
-					Attack:
-						icon: 'Attack.png'
-						hotkeyCode: 'Attack/Bunker'
-						displayText: 'Attack'
-					BunkerLoad:
-						icon: 'BunkerLoad.png'
-						hotkeyCode: 'BunkerLoad/Bunker'
-						displayText: 'Bunker Load'
-					BunkerUnloadAll:
-						icon: 'BunkerUnloadAll.png'
-						hotkeyCode: 'BunkerUnloadAll/Bunker'
-						displayText: 'Bunker Unload All'
+					inherit: ['unit.cancel', 'unit.load', 'unit.attack']
 					Salvage:
-						icon: 'Salvage.png'
+						icon: 'Salvage.gif'
 						hotkeyCode: 'Salvage/Bunker'
 						displayText: 'Salvage'
 					Rally:
-						icon: 'Rally.png'
+						icon: 'Rally.jpg'
 						hotkeyCode: 'SetBunkerRallyPoint/Bunker'
 						displayText: 'Rally'
 			MissileTurret:
 				icon: 'missileturret.jpg'
 				displayText: 'Missile Turret'
 				commands:
-					inherit: ['unit.combat']
+					inherit: ['unit.combat', 'unit.cancel']
 			EngineeringBay:
 				icon: 'engineeringbay.jpg'
 				displayText: 'Engineering Bay'
 				commands:
-					inherit: ['building.flying']
+					inherit: ['unit.cancel']
 					ResearchHiSecAutoTracking:
-						icon: 'ResearchHiSecAutoTracking.png'
+						icon: 'HisecAutoTracking.gif'
 						hotkeyCode: 'ResearchHiSecAutoTracking/EngineeringBay'
-						displayText: 'Research Hi Sec Auto Tracking'
+						displayText: 'Hi-Sec Auto Tracking'
 					ResearchNeosteelFrame:
-						icon: 'ResearchNeosteelFrame.png'
+						icon: 'NeosteelFrames.gif'
 						hotkeyCode: 'ResearchNeosteelFrame/EngineeringBay'
 						displayText: 'Research Neosteel Frame'
 					TerranInfantryArmorLevel1:
-						icon: 'TerranInfantryArmorLevel1.png'
+						icon: 'InfantryArmor1.gif'
 						hotkeyCode: 'TerranInfantryArmorLevel1/EngineeringBay'
-						displayText: 'Terran Infantry Armor Level1'
-					TerranInfantryArmorVanadiumPlatingLevel1:
-						icon: 'TerranInfantryArmorVanadiumPlatingLevel1.png'
-						hotkeyCode: 'TerranInfantryArmorVanadiumPlatingLevel1/EngineeringBay'
-						displayText: 'Terran Infantry Armor Vanadium Plating Level1'
-					TerranInfantryArmorVanadiumPlatingLevel2:
-						icon: 'TerranInfantryArmorVanadiumPlatingLevel2.png'
-						hotkeyCode: 'TerranInfantryArmorVanadiumPlatingLevel2/EngineeringBay'
-						displayText: 'Terran Infantry Armor Vanadium Plating Level2'
-					TerranInfantryArmorVanadiumPlatingLevel3:
-						icon: 'TerranInfantryArmorVanadiumPlatingLevel3.png'
-						hotkeyCode: 'TerranInfantryArmorVanadiumPlatingLevel3/EngineeringBay'
-						displayText: 'Terran Infantry Armor Vanadium Plating Level3'
+						displayText: 'Terran Infantry Armor'
 					TerranInfantryWeaponsLevel1:
-						icon: 'TerranInfantryWeaponsLevel1.png'
+						icon: 'InfantryWeapons1.gif'
 						hotkeyCode: 'TerranInfantryWeaponsLevel1/EngineeringBay'
-						displayText: 'Terran Infantry Weapons Level1'
-					TerranInfantryWeaponsUltraCapacitorsLevel1:
-						icon: 'TerranInfantryWeaponsUltraCapacitorsLevel1.png'
-						hotkeyCode: 'TerranInfantryWeaponsUltraCapacitorsLevel1/EngineeringBay'
-						displayText: 'Terran Infantry Weapons Ultra Capacitors Level1'
-					TerranInfantryWeaponsUltraCapacitorsLevel2:
-						icon: 'TerranInfantryWeaponsUltraCapacitorsLevel2.png'
-						hotkeyCode: 'TerranInfantryWeaponsUltraCapacitorsLevel2/EngineeringBay'
-						displayText: 'Terran Infantry Weapons Ultra Capacitors Level2'
-					TerranInfantryWeaponsUltraCapacitorsLevel3:
-						icon: 'TerranInfantryWeaponsUltraCapacitorsLevel3.png'
-						hotkeyCode: 'TerranInfantryWeaponsUltraCapacitorsLevel3/EngineeringBay'
-						displayText: 'Terran Infantry Weapons Ultra Capacitors Level3'
+						displayText: 'Terran Infantry Weapons'
 					UpgradeBuildingArmorLevel1:
-						icon: 'UpgradeBuildingArmorLevel1.png'
+						icon: 'BuildingArmor.gif'
 						hotkeyCode: 'UpgradeBuildingArmorLevel1/EngineeringBay'
-						displayText: 'Upgrade Building Armor Level1'
+						displayText: 'Upgrade Building Armor'
 			Factory:
 				icon: 'factory.jpg'
 				displayText: 'Factory'
 				commands:
-					inherit: ['building.flying']
-					Diamondback:
-						icon: 'Diamondback.png'
-						hotkeyCode: 'Diamondback/Factory'
-						displayText: 'Diamondback'
+					inherit: ['unit.flying', 'unit.cancel']
 					BuildHellion:
 						icon: 'hellion.jpg'
 						hotkeyCode: 'Hellion/Factory'
 						displayText: 'Build Hellion'
+						if: -> not @lifted
 					HellionTank:
-						icon: 'HellionTank.png'
+						icon: 'hellbat.jpg'
 						hotkeyCode: 'HellionTank/Factory'
-						displayText: 'Hellion Tank'
+						displayText: 'Build HellBat'
+						if: -> not @lifted
 					BuildSiegeTank:
 						icon: 'siegetank.jpg'
 						hotkeyCode: 'SiegeTank/Factory'
 						displayText: 'Build Siege Tank'
+						if: -> not @lifted
 					BuildTechLab:
 						icon: 'TechLab.png'
 						hotkeyCode: 'TechLabFactory/Factory'
 						displayText: 'Build Tech Lab'
+						if: -> not @lifted
 					BuildThor:
 						icon: 'thor.jpg'
 						hotkeyCode: 'Thor/Factory'
 						displayText: 'Build Thor'
-					BuildVulture:
-						icon: 'Vulture.png'
-						hotkeyCode: 'Vulture/Factory'
-						displayText: 'Vulture'
+						if: -> not @lifted
 					BuildWidowMine:
 						icon: 'widowmine.jpg'
 						hotkeyCode: 'WidowMine/Factory'
 						displayText: 'Build Widow Mine'
-
+						if: -> not @lifted
 					BuildReactor:
 						icon: 'reactor.jpg'
 						hotkeyCode: 'Reactor/Factory'
 						displayText: 'Build Reactor'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'Reactor'
 					BuildTechLab:
 						icon: 'techlab.jpg'
 						hotkeyCode: 'TechLabFactory/Factory'
 						displayText: 'Build Tech Lab'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'TechLab'
 			FactoryTechLab:
 				icon: 'factorytechlab.jpg'
 				displayText: 'Factory Tech Lab'
 				commands:
-					ResearchCerberusMines:
-						icon: 'ResearchCerberusMines.png'
-						hotkeyCode: 'ResearchCerberusMines/FactoryTechLab'
-						displayText: 'Research Cerberus Mines'
+					inherit: ['unit.cancel']
+					ResearchHighCapacityBarrels:
+						icon: 'InfernalPreigniter.png'
+						hotkeyCode: 'ResearchHighCapacityBarrels/FactoryTechLab'
+						displayText: 'Research Infernal Pre-Igniter'
 					ResearchDrillClaws:
-						icon: 'ResearchDrillClaws.png'
+						icon: 'DrillingClaws.png'
 						hotkeyCode: 'ResearchDrillClaws/FactoryTechLab'
 						displayText: 'Research Drill Claws'
-					ResearchHighCapacityBarrels:
-						icon: 'ResearchHighCapacityBarrels.png'
-						hotkeyCode: 'ResearchHighCapacityBarrels/FactoryTechLab'
-						displayText: 'Research High Capacity Barrels'
-					ResearchMultiLockTargetingSystem:
-						icon: 'ResearchMultiLockTargetingSystem.png'
-						hotkeyCode: 'ResearchMultiLockTargetingSystem/FactoryTechLab'
-						displayText: 'Research Multi Lock Targeting System'
-					ResearchRegenerativeBioSteel:
-						icon: 'ResearchRegenerativeBioSteel.png'
-						hotkeyCode: 'ResearchRegenerativeBioSteel/FactoryTechLab'
-						displayText: 'Research Regenerative Bio Steel'
-					ResearchShapedBlast:
-						icon: 'ResearchShapedBlast.png'
-						hotkeyCode: 'ResearchShapedBlast/FactoryTechLab'
-						displayText: 'Research Shaped Blast'
-					ResearchStrikeCannons:
-						icon: 'ResearchStrikeCannons.png'
-						hotkeyCode: 'ResearchStrikeCannons/FactoryTechLab'
-						displayText: 'Research Strike Cannons'
-					ResearchTransformationServos:
-						icon: 'ResearchTransformationServos.png'
-						hotkeyCode: 'ResearchTransformationServos/FactoryTechLab'
-						displayText: 'Research Transformation Servos'
 			Starport:
 				icon: 'starport.jpg'
 				displayText: 'Starport'
 				commands:
+					inherit: ['unit.flying', 'unit.cancel']
 					Banshee:
-						icon: 'Banshee.png'
+						icon: 'banshee.jpg'
 						hotkeyCode: 'Banshee/Starport'
 						displayText: 'Banshee'
+						if: -> not @lifted
 					BuildBattlecruiser:
 						icon: 'battlecruiser.jpg'
 						hotkeyCode: 'Battlecruiser/Starport'
 						displayText: 'Build Battlecruiser'
-					BuildScienceVessel:
-						icon: 'BuildScienceVessel.png'
-						hotkeyCode: 'BuildScienceVessel/Starport'
-						displayText: 'Build Science Vessel'
+						if: -> not @lifted
 					BuildTechLabStarport:
 						icon: 'BuildTechLabStarport.png'
 						hotkeyCode: 'BuildTechLabStarport'
 						displayText: 'Build Tech Lab Starport'
+						if: -> not @lifted
 					BuildMedivac:
 						icon: 'medivac.jpg'
 						hotkeyCode: 'Medivac/Starport'
 						displayText: 'Build Medivac'
+						if: -> not @lifted
 					BuildRaven:
 						icon: 'raven.jpg'
 						hotkeyCode: 'Raven/Starport'
 						displayText: 'Build Raven'
+						if: -> not @lifted
 					BuildReactor:
 						icon: 'reactor.jpg'
 						hotkeyCode: 'Reactor/Starport'
 						displayText: 'Build Reactor'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'Reactor'
 					BuildTechLab:
 						icon: 'techlab.jpg'
 						hotkeyCode: 'TechLabStarport/Starport'
 						displayText: 'Build Tech Lab'
-						if: -> not @upgrade
+						if: -> not (@upgrade or @lifted)
 						on: -> @upgrade = 'TechLab'
 					VikingFighter:
-						icon: 'VikingFighter.png'
+						icon: 'viking.jpg'
 						hotkeyCode: 'VikingFighter/Starport'
 						displayText: 'Viking Fighter'
+						if: -> not @lifted
 			StarportTechLab:
 				icon: 'starporttechlab.jpg'
 				displayText: 'Starport Tech Lab'
 				commands:
+					inherit: ['unit.cancel']
 					ResearchBansheeCloak:
-						icon: 'ResearchBansheeCloak.png'
+						icon: 'Cloak.png'
 						hotkeyCode: 'ResearchBansheeCloak/StarportTechLab'
 						displayText: 'Research Banshee Cloak'
 					ResearchDurableMaterials:
-						icon: 'ResearchDurableMaterials.png'
+						icon: 'DurableMaterials.gif'
 						hotkeyCode: 'ResearchDurableMaterials/StarportTechLab'
 						displayText: 'Research Durable Materials'
 					ResearchMedivacEnergyUpgrade:
-						icon: 'ResearchMedivacEnergyUpgrade.png'
+						icon: 'CaduceusReactor.gif'
 						hotkeyCode: 'ResearchMedivacEnergyUpgrade/StarportTechLab'
 						displayText: 'Research Medivac Energy Upgrade'
 					ResearchRavenEnergyUpgrade:
-						icon: 'ResearchRavenEnergyUpgrade.png'
+						icon: 'CorvidReactor.gif'
 						hotkeyCode: 'ResearchRavenEnergyUpgrade/StarportTechLab'
 						displayText: 'Research Raven Energy Upgrade'
-					ResearchSeekerMissile:
-						icon: 'ResearchSeekerMissile.png'
-						hotkeyCode: 'ResearchSeekerMissile/StarportTechLab'
-						displayText: 'Research Seeker Missile'
 			Armory:
 				icon: 'armory.jpg'
 				displayText: 'Armory'
 				commands:
-					TerranShipPlatingLevel1:
-						icon: 'TerranShipPlatingLevel1.png'
-						hotkeyCode: 'TerranShipPlatingLevel1/Armory'
-						displayText: 'Terran Ship Plating Level1'
-					TerranShipPlatingVanadiumPlatingLevel1:
-						icon: 'TerranShipPlatingVanadiumPlatingLevel1.png'
-						hotkeyCode: 'TerranShipPlatingVanadiumPlatingLevel1/Armory'
-						displayText: 'Terran Ship Plating Vanadium Plating Level1'
-					TerranShipPlatingVanadiumPlatingLevel2:
-						icon: 'TerranShipPlatingVanadiumPlatingLevel2.png'
-						hotkeyCode: 'TerranShipPlatingVanadiumPlatingLevel2/Armory'
-						displayText: 'Terran Ship Plating Vanadium Plating Level2'
-					TerranShipPlatingVanadiumPlatingLevel3:
-						icon: 'TerranShipPlatingVanadiumPlatingLevel3.png'
-						hotkeyCode: 'TerranShipPlatingVanadiumPlatingLevel3/Armory'
-						displayText: 'Terran Ship Plating Vanadium Plating Level3'
-					TerranShipWeaponsLevel1:
-						icon: 'TerranShipWeaponsLevel1.png'
-						hotkeyCode: 'TerranShipWeaponsLevel1/Armory'
-						displayText: 'Terran Ship Weapons Level1'
-					TerranShipWeaponsUltraCapacitorsLevel1:
-						icon: 'TerranShipWeaponsUltraCapacitorsLevel1.png'
-						hotkeyCode: 'TerranShipWeaponsUltraCapacitorsLevel1/Armory'
-						displayText: 'Terran Ship Weapons Ultra Capacitors Level1'
-					TerranShipWeaponsUltraCapacitorsLevel2:
-						icon: 'TerranShipWeaponsUltraCapacitorsLevel2.png'
-						hotkeyCode: 'TerranShipWeaponsUltraCapacitorsLevel2/Armory'
-						displayText: 'Terran Ship Weapons Ultra Capacitors Level2'
-					TerranShipWeaponsUltraCapacitorsLevel3:
-						icon: 'TerranShipWeaponsUltraCapacitorsLevel3.png'
-						hotkeyCode: 'TerranShipWeaponsUltraCapacitorsLevel3/Armory'
-						displayText: 'Terran Ship Weapons Ultra Capacitors Level3'
+					inherit: ['unit.cancel']
 					TerranVehicleAndShipPlatingLevel1:
-						icon: 'TerranVehicleAndShipPlatingLevel1.png'
+						icon: 'VehiclePlating1.gif'
 						hotkeyCode: 'TerranVehicleAndShipPlatingLevel1/Armory'
-						displayText: 'Terran Vehicle And Ship Plating Level1'
-					TerranVehiclePlatingLevel1:
-						icon: 'TerranVehiclePlatingLevel1.png'
-						hotkeyCode: 'TerranVehiclePlatingLevel1/Armory'
-						displayText: 'Terran Vehicle Plating Level1'
-					TerranVehiclePlatingVanadiumPlatingLevel1:
-						icon: 'TerranVehiclePlatingVanadiumPlatingLevel1.png'
-						hotkeyCode: 'TerranVehiclePlatingVanadiumPlatingLevel1/Armory'
-						displayText: 'Terran Vehicle Plating Vanadium Plating Level1'
-					TerranVehiclePlatingVanadiumPlatingLevel2:
-						icon: 'TerranVehiclePlatingVanadiumPlatingLevel2.png'
-						hotkeyCode: 'TerranVehiclePlatingVanadiumPlatingLevel2/Armory'
-						displayText: 'Terran Vehicle Plating Vanadium Plating Level2'
-					TerranVehiclePlatingVanadiumPlatingLevel3:
-						icon: 'TerranVehiclePlatingVanadiumPlatingLevel3.png'
-						hotkeyCode: 'TerranVehiclePlatingVanadiumPlatingLevel3/Armory'
-						displayText: 'Terran Vehicle Plating Vanadium Plating Level3'
-					TerranVehicleWeaponsLevel1:
-						icon: 'TerranVehicleWeaponsLevel1.png'
-						hotkeyCode: 'TerranVehicleWeaponsLevel1/Armory'
-						displayText: 'Terran Vehicle Weapons Level1'
-					TerranVehicleWeaponsUltraCapacitorsLevel1:
-						icon: 'TerranVehicleWeaponsUltraCapacitorsLevel1.png'
-						hotkeyCode: 'TerranVehicleWeaponsUltraCapacitorsLevel1/Armory'
-						displayText: 'Terran Vehicle Weapons Ultra Capacitors Level1'
-					TerranVehicleWeaponsUltraCapacitorsLevel2:
-						icon: 'TerranVehicleWeaponsUltraCapacitorsLevel2.png'
-						hotkeyCode: 'TerranVehicleWeaponsUltraCapacitorsLevel2/Armory'
-						displayText: 'Terran Vehicle Weapons Ultra Capacitors Level2'
-					TerranVehicleWeaponsUltraCapacitorsLevel3:
-						icon: 'TerranVehicleWeaponsUltraCapacitorsLevel3.png'
-						hotkeyCode: 'TerranVehicleWeaponsUltraCapacitorsLevel3/Armory'
-						displayText: 'Terran Vehicle Weapons Ultra Capacitors Level3'
+						displayText: 'Upgrade Terran Vehicle Plating'
+					TerranVehicleAndShipWeaponsLevel1:
+						icon: 'VehicleWeapons1.gif'
+						hotkeyCode: 'TerranVehicleAndShipWeaponsLevel1/Armory'
+						displayText: 'Upgrade Terran Vehicle Weapons'
 			GhostAcademy:
 				icon: 'ghostacademy.jpg'
 				displayText: 'Ghost Academy'
 				commands:
+					inherit: ['unit.cancel']
 					NukeArm:
-						icon: 'NukeArm.png'
+						icon: 'NukeCalldown.png'
 						hotkeyCode: 'NukeArm/GhostAcademy'
 						displayText: 'Nuke Arm'
-					ResearchGhostEnergyUpgrade:
-						icon: 'ResearchGhostEnergyUpgrade.png'
-						hotkeyCode: 'ResearchGhostEnergyUpgrade/GhostAcademy'
-						displayText: 'Research Ghost Energy Upgrade'
 					ResearchPersonalCloaking:
-						icon: 'ResearchPersonalCloaking.png'
+						icon: 'Cloak.png'
 						hotkeyCode: 'ResearchPersonalCloaking/GhostAcademy'
 						displayText: 'Research Personal Cloaking'
 			FusionCore:
 				icon: 'fusioncore.jpg'
 				displayText: 'Fusion Core'
 				commands:
+					inherit: ['unit.cancel']
 					ResearchBattlecruiserEnergyUpgrade:
-						icon: 'ResearchBattlecruiserEnergyUpgrade.png'
+						icon: 'BehemothReactor.gif'
 						hotkeyCode: 'ResearchBattlecruiserEnergyUpgrade/FusionCore'
 						displayText: 'Research Battlecruiser Energy Upgrade'
 					ResearchBattlecruiserSpecializations:
-						icon: 'ResearchBattlecruiserSpecializations.png'
+						icon: 'YamatoCannon.png'
 						hotkeyCode: 'ResearchBattlecruiserSpecializations/FusionCore'
-						displayText: 'Research Battlecruiser Specializations'
+						displayText: 'Research Weapon Refit'
 			SensorTower:
 				icon: 'sensortower.jpg'
 				displayText: 'Sensor Tower'
@@ -1906,19 +1797,14 @@ exports.raceCards = raceCards =
 				displayText: 'Egg'
 				commands:
 					Rally:
-						icon: 'RallyEgg.png'
-						hotkeyCode: 'RallyEgg/Egg'
+						icon: 'Rally.jpg'
+						hotkeyCode: 'RallyEgg'
 						displayText: 'Rally'
 			Drone:
 				icon: 'drone.jpg'
 				displayText: 'Drone'
 				commands:
-					inherit: ['unit.movement', 'unit.combat', 'unit.burrow']
-					ReturnCargo:
-						icon: 'ReturnCargo.png'
-						hotkeyCode: 'ReturnCargo/Drone'
-						displayText: 'Return Cargo'
-						if: -> not @buildCard
+					inherit: ['unit.movement', 'unit.combat', 'unit.burrow', 'unit.worker']
 					BuildBasic:
 						icon: 'Build.png'
 						hotkeyCode: 'ZergBuild/Drone'
@@ -1931,6 +1817,12 @@ exports.raceCards = raceCards =
 						displayText: 'Build Advanced'
 						if: -> not (@buildCard or @burrowed)
 						on: -> @buildCard = 'advanced'
+					Cancel:
+						icon: 'Cancel.png'
+						hotkeyCode: 'Cancel'
+						displayText: 'Cancel'
+						if: -> @buildCard
+						on: -> @buildCard = null
 					BuildEvolutionChamber:
 						icon: 'evolutionchamber.jpg'
 						hotkeyCode: 'EvolutionChamber/Drone'
@@ -1938,62 +1830,62 @@ exports.raceCards = raceCards =
 						if: -> @buildCard is 'basic'
 					BuildExtractor:
 						icon: 'Extractor.png'
-						hotkeyCode: 'Extractor'
+						hotkeyCode: 'Extractor/Drone'
 						displayText: 'Extractor'
 						if: -> @buildCard is 'basic'
 					BuildHatchery:
 						icon: 'hatchery.jpg'
-						hotkeyCode: 'Hatchery'
+						hotkeyCode: 'Hatchery/Drone'
 						displayText: 'Build Hatchery'
 						if: -> @buildCard is 'basic'
 					BuildRoachWarren:
 						icon: 'roachwarren.jpg'
-						hotkeyCode: 'RoachWarren'
+						hotkeyCode: 'RoachWarren/Drone'
 						displayText: 'Build Roach Warren'
 						if: -> @buildCard is 'basic'
 					BuildSpawningPool:
 						icon: 'spawningpool.jpg'
-						hotkeyCode: 'SpawningPool'
+						hotkeyCode: 'SpawningPool/Drone'
 						displayText: 'Build Spawning Pool'
 						if: -> @buildCard is 'basic'
 					BuildSpineCrawler:
 						icon: 'spinecrawler.jpg'
-						hotkeyCode: 'SpineCrawler'
+						hotkeyCode: 'SpineCrawler/Drone'
 						displayText: 'Build Spine Crawler'
 						if: -> @buildCard is 'basic'
 					BuildSporeCrawler:
 						icon: 'sporecrawler.jpg'
-						hotkeyCode: 'SporeCrawler'
+						hotkeyCode: 'SporeCrawler/Drone'
 						displayText: 'Build Spore Crawler'
 						if: -> @buildCard is 'basic'
 					BuildBanelingNest:
 						icon: 'banelingnest.jpg'
-						hotkeyCode: 'BanelingNest'
+						hotkeyCode: 'BanelingNest/Drone'
 						displayText: 'Build Baneling Nest'
-						if: -> @buildCard is 'advanced'
+						if: -> @buildCard is 'basic'
 					BuildHydraliskDen:
 						icon: 'hydraliskden.jpg'
-						hotkeyCode: 'HydraliskDen'
+						hotkeyCode: 'HydraliskDen/Drone'
 						displayText: 'Build Hydralisk Den'
 						if: -> @buildCard is 'advanced'
 					BuildInfestationPit:
 						icon: 'infestationpit.jpg'
-						hotkeyCode: 'InfestationPit'
+						hotkeyCode: 'InfestationPit/Drone'
 						displayText: 'Build Infestation Pit'
 						if: -> @buildCard is 'advanced'
 					BuildNydusNetwork:
 						icon: 'nydusnetwork.jpg'
-						hotkeyCode: 'NydusNetwork'
+						hotkeyCode: 'NydusNetwork/Drone'
 						displayText: 'Build Nydus Network'
 						if: -> @buildCard is 'advanced'
 					BuildSpire:
 						icon: 'spire.jpg'
-						hotkeyCode: 'Spire'
+						hotkeyCode: 'Spire/Drone'
 						displayText: 'Build Spire'
 						if: -> @buildCard is 'advanced'
 					BuildUltraliskCavern:
 						icon: 'ultraliskcavern.jpg'
-						hotkeyCode: 'UltraliskCavern'
+						hotkeyCode: 'UltraliskCavern/Drone'
 						displayText: 'Build Ultralisk Cavern'
 						if: -> @buildCard is 'advanced'
 			Overlord:
@@ -2005,6 +1897,8 @@ exports.raceCards = raceCards =
 						icon: 'GenerateCreep.png'
 						hotkeyCode: 'GenerateCreep/Overlord'
 						displayText: 'Generate Creep'
+						if: -> not @gencreep
+						on: -> @gencreep = yes
 					MorphToOverseer:
 						icon: 'MorphToOverseer.png'
 						hotkeyCode: 'MorphToOverseer/Overlord'
@@ -2013,6 +1907,8 @@ exports.raceCards = raceCards =
 						icon: 'StopGenerateCreep.png'
 						hotkeyCode: 'StopGenerateCreep/Overlord'
 						displayText: 'Stop Generate Creep'
+						if: -> @gencreep
+						on: -> @gencreep = no
 			Zergling:
 				icon: 'zergling.jpg'
 				displayText: 'Zergling'
@@ -2022,6 +1918,7 @@ exports.raceCards = raceCards =
 						icon: 'baneling.jpg'
 						hotkeyCode: 'Baneling/Zergling'
 						displayText: 'Morph to Baneling'
+						if: -> not @burrowed
 			Roach:
 				icon: 'roach.jpg'
 				displayText: 'Roach'
@@ -2036,43 +1933,38 @@ exports.raceCards = raceCards =
 						icon: 'BuildCreepTumor.png'
 						hotkeyCode: 'BuildCreepTumor/Queen'
 						displayText: 'Build Creep Tumor'
+						if: -> not @burrowed
 					InjectLarva:
 						icon: 'larva.jpg'
-						hotkeyCode: 'Larva/Queen'
+						hotkeyCode: 'MorphMorphalisk/Queen'
 						displayText: 'Inject Larva'
-					QueenBurstHeal:
-						icon: 'QueenBurstHeal.png'
-						hotkeyCode: 'QueenBurstHeal/Queen'
-						displayText: 'Queen Burst Heal'
+						if: -> not @burrowed
 					Transfusion:
 						icon: 'Transfusion.png'
 						hotkeyCode: 'Transfusion/Queen'
 						displayText: 'Transfusion'
+						if: -> not @burrowed
 			Baneling:
 				icon: 'baneling.jpg'
 				displayText: 'Baneling'
 				commands:
 					inherit: ['unit.movement', 'unit.combat', 'unit.burrow']
 					DisableBuildingAttack:
-						icon: 'DisableBuildingAttack.png'
+						icon: 'Explode.png'
 						hotkeyCode: 'DisableBuildingAttack/Baneling'
 						displayText: 'Disable Building Attack'
-						if: -> @buildingAttack
+						if: -> @buildingAttack and not @burrowed
 						on: -> @buildingAttack = no
 					EnableBuildingAttack:
 						icon: 'EnableBuildingAttack.png'
 						hotkeyCode: 'EnableBuildingAttack/Baneling'
 						displayText: 'Enable Building Attack'
-						if: -> not @buildingAttack
+						if: -> not @buildingAttack and not @burrowed
 						on: -> @buildingAttack = yes
 					Explode:
 						icon: 'Explode.png'
 						hotkeyCode: 'Explode/Baneling'
 						displayText: 'Explode'
-					SapStructure:
-						icon: 'SapStructure.png'
-						hotkeyCode: 'SapStructure/Baneling'
-						displayText: 'Sap Structure'
 			Ultralisk:
 				icon: 'ultralisk.jpg'
 				displayText: 'Ultralisk'
@@ -2083,18 +1975,6 @@ exports.raceCards = raceCards =
 				displayText: 'Hydralisk'
 				commands:
 					inherit: ['unit.movement', 'unit.combat', 'unit.burrow']
-					BurrowDown:
-						icon: 'BurrowDown.png'
-						hotkeyCode: 'BurrowDown/Hydralisk'
-						displayText: 'Burrow'
-						if: -> not @burrowed
-						on: -> @burrowed = yes
-					BurrowUp:
-						icon: 'BurrowUp.png'
-						hotkeyCode: 'BurrowUp/Hydralisk'
-						displayText: 'Unburrow'
-						if: -> @burrowed
-						on: -> @burrowed = no
 			Infestor:
 				icon: 'infestor.jpg'
 				displayText: 'Infestor'
@@ -2104,32 +1984,31 @@ exports.raceCards = raceCards =
 						icon: 'FungalGrowth.png'
 						hotkeyCode: 'FungalGrowth/Infestor'
 						displayText: 'Fungal Growth'
+						if: -> not @burrowed
 					InfestedTerrans:
-						icon: 'InfestedTerrans.png'
+						icon: 'InfestedTerrans.gif'
 						hotkeyCode: 'InfestedTerrans/Infestor'
 						displayText: 'Infested Terrans'
-					InfestorConsumption:
-						icon: 'InfestorConsumption.png'
-						hotkeyCode: 'InfestorConsumption/Infestor'
-						displayText: 'Infestor Consumption'
-					NPSwarm:
-						icon: 'NPSwarm.png'
-						hotkeyCode: 'NPSwarm/Infestor'
-						displayText: 'NPSwarm'
 					NeuralParasite:
 						icon: 'NeuralParasite.png'
 						hotkeyCode: 'NeuralParasite/Infestor'
 						displayText: 'Neural Parasite'
+						if: -> not @burrowed
 			SwarmHost:
 				icon: 'swarmhost.jpg'
 				displayText: 'Swarm Host'
 				commands:
 					inherit: ['unit.movement', 'unit.combat', 'unit.burrow']
-					LocustLaunch:
-						icon: 'LocustLaunch.png'
-						hotkeyCode: 'LocustLaunch/SwarmHostBurrowed'
-						displayText: 'Locust Launch'
+					SpawnLocustsBurrowed:
+						icon: 'SpawnLocusts.png'
+						hotkeyCode: 'SwarmHost/SwarmHostBurrowedMP'
+						displayText: 'Spawn Locusts'
 						if: -> @burrowed
+					SpawnLocusts:
+						icon: 'SpawnLocusts.png'
+						hotkeyCode: 'SwarmHost/SwarmHostMP'
+						displayText: 'Spawn Locusts'
+						if: -> not @burrowed
 			Viper:
 				icon: 'viper.jpg'
 				displayText: 'Viper'
@@ -2139,33 +2018,21 @@ exports.raceCards = raceCards =
 						icon: 'BlindingCloud.png'
 						hotkeyCode: 'BlindingCloud/Viper'
 						displayText: 'Blinding Cloud'
-					BurrowProtector:
-						icon: 'BurrowProtector.png'
-						hotkeyCode: 'BurrowProtector'
-						displayText: 'Burrow Protector'
-					DisablingCloud:
-						icon: 'DisablingCloud.png'
-						hotkeyCode: 'DisablingCloud/Viper'
-						displayText: 'Disabling Cloud'
 					FaceEmbrace:
-						icon: 'FaceEmbrace.png'
+						icon: 'ViperAbduct.png'
 						hotkeyCode: 'FaceEmbrace/Viper'
-						displayText: 'Face Embrace'
+						displayText: 'Abduct'
 					ViperConsume:
 						icon: 'ViperConsume.png'
 						hotkeyCode: 'ViperConsume/Viper'
 						displayText: 'Viper Consume'
-					ViperConsumption:
-						icon: 'ViperConsumption.png'
-						hotkeyCode: 'ViperConsumption/Viper'
-						displayText: 'Viper Consumption'
 			Corruptor:
 				icon: 'corruptor.jpg'
 				displayText: 'Corruptor'
 				commands:
 					inherit: ['unit.movement', 'unit.combat']
 					BroodLord:
-						icon: 'BroodLord.png'
+						icon: 'broodlord.jpg'
 						hotkeyCode: 'BroodLord/Corruptor'
 						displayText: 'Brood Lord'
 					CorruptionAbility:
@@ -2182,24 +2049,33 @@ exports.raceCards = raceCards =
 						hotkeyCode: 'Contaminate/Overseer'
 						displayText: 'Contaminate'
 					SpawnChangeling:
-						icon: 'SpawnChangeling.png'
+						icon: 'SpawnChangeling.gif'
 						hotkeyCode: 'SpawnChangeling/Overseer'
 						displayText: 'Spawn Changeling'
+			Broodlord:
+				icon: 'broodlord.jpg'
+				displayText: 'Broodlord'
+				commands:
+					inherit: ['unit.movement', 'unit.combat']
 		buildings:
 			Hatchery:
 				icon: 'hatchery.jpg'
 				displayText: 'Hatchery'
 				commands:
+					inherit: ['unit.cancel']
 					SelectLarva:
 						icon: 'larva.jpg'
 						hotkeyCode: 'Larva'
 						displayText: 'Select Larva'
 						on: -> @globalState.selectNew 'Zerg', 'units', 'Larva'
+					Queen:
+						icon: 'queen.jpg'
+						hotkeyCode: 'Queen'
+						displayText: 'Spawn Queen'
 					EvolveVentralSacks:
-						icon: 'EvolveVentralSacks.png'
-						hotkeyCode: 'EvolveVentralSacks/Hatchery'
+						icon: 'VentralSacs.gif'
+						hotkeyCode: 'EvolveVentralSacks'
 						displayText: 'Evolve Ventral Sacks'
-						if: -> @upgrade
 					BuildLair:
 						icon: 'lair.jpg'
 						hotkeyCode: 'Lair/Hatchery'
@@ -2213,140 +2089,143 @@ exports.raceCards = raceCards =
 						if: -> @upgrade is 'Lair'
 						on: -> @upgrade = 'Hive'
 					ResearchBurrow:
-						icon: 'ResearchBurrow.png'
-						hotkeyCode: 'ResearchBurrow/Hatchery'
+						icon: 'Burrow.gif'
+						hotkeyCode: 'ResearchBurrow'
 						displayText: 'Research Burrow'
-						if: -> @upgrade
 					overlordspeed:
-						icon: 'overlordspeed.png'
-						hotkeyCode: 'overlordspeed/Hatchery'
-						displayText: 'overlordspeed'
+						icon: 'PneumatizedCarapace.gif'
+						hotkeyCode: 'overlordspeed'
+						displayText: 'Pneumatized Carapace'
 			SpineCrawler:
 				icon: 'spinecrawler.jpg'
 				displayText: 'Spine Crawler Uprooted'
 				commands:
-					inherit: ['unit.movement', 'unit.combat']
+					inherit: ['unit.movement', 'unit.combat', 'unit.cancel']
 					Root:
 						icon: 'Root.png'
 						hotkeyCode: 'SpineCrawlerRoot/SpineCrawlerUprooted'
 						displayText: 'Root'
-						on: -> @rooted = yes
-						if: -> not @rooted
+						on: -> @unrooted = no
+						if: -> @unrooted
 					Uproot:
 						icon: 'Uproot.png'
 						hotkeyCode: 'SpineCrawlerUproot/SpineCrawler'
 						displayText: 'Uproot'
-						on: -> @rooted = no
-						if: -> @rooted
+						on: -> @unrooted = yes
+						if: -> not @unrooted
 			SporeCrawler:
 				icon: 'sporecrawler.jpg'
 				displayText: 'Spore Crawler'
 				commands:
-					inherit: ['unit.movement','unit.combat']
+					inherit: ['unit.movement','unit.combat', 'unit.cancel']
 					Root:
 						icon: 'Root.png'
 						hotkeyCode: 'SporeCrawlerRoot/SporeCrawlerUprooted'
 						displayText: 'Root'
-						on: -> @rooted = yes
-						if: -> not @rooted
+						on: -> @unrooted = no
+						if: -> @unrooted
 					Uproot:
 						icon: 'Uproot.png'
 						hotkeyCode: 'SporeCrawlerUproot/SporeCrawler'
 						displayText: 'Uproot'
-						on: -> @rooted = no
-						if: -> @rooted
+						on: -> @unrooted = yes
+						if: -> not @unrooted
 			SpawningPool:
 				icon: 'spawningpool.jpg'
 				displayText: 'Spawning Pool'
 				commands:
+					inherit: ['unit.cancel']
 					zerglingattackspeed:
-						icon: 'zerglingattackspeed.png'
+						icon: 'AdrenalGlands.gif'
 						hotkeyCode: 'zerglingattackspeed/SpawningPool'
-						displayText: 'zerglingattackspeed'
+						displayText: 'Adrenal Glands'
 					zerglingmovementspeed:
-						icon: 'zerglingmovementspeed.png'
+						icon: 'MetabolicBoost.gif'
 						hotkeyCode: 'zerglingmovementspeed/SpawningPool'
-						displayText: 'zerglingmovementspeed'
+						displayText: 'Metabolic Boost'
 			RoachWarren:
 				icon: 'roachwarren.jpg'
 				displayText: 'Roach Warren'
 				commands:
+					inherit: ['unit.cancel']
 					EvolveGlialRegeneration:
-						icon: 'EvolveGlialRegeneration.png'
+						icon: 'EvolveGlialRegeneration.gif'
 						hotkeyCode: 'EvolveGlialRegeneration/RoachWarren'
 						displayText: 'Evolve Glial Regeneration'
 					EvolveTunnelingClaws:
-						icon: 'EvolveTunnelingClaws.png'
+						icon: 'EvolveTunnelingClaws.gif'
 						hotkeyCode: 'EvolveTunnelingClaws/RoachWarren'
 						displayText: 'Evolve Tunneling Claws'
 			EvolutionChamber:
 				icon: 'evolutionchamber.jpg'
 				displayText: 'Evolution Chamber'
 				commands:
+					inherit: ['unit.cancel']
 					zerggroundarmor1:
-						icon: 'zerggroundarmor1.png'
+						icon: 'ZergGroundCarapace1.gif'
 						hotkeyCode: 'zerggroundarmor1/EvolutionChamber'
-						displayText: 'zerggroundarmor1'
+						displayText: 'Ground Carapace'
 					zergmeleeweapons1:
-						icon: 'zergmeleeweapons1.png'
+						icon: 'ZergMeleeAttacks1.gif'
 						hotkeyCode: 'zergmeleeweapons1/EvolutionChamber'
-						displayText: 'zergmeleeweapons1'
+						displayText: 'Melee Weapons'
 					zergmissileweapons1:
-						icon: 'zergmissileweapons1.png'
+						icon: 'ZergMissileAttacks1.gif'
 						hotkeyCode: 'zergmissileweapons1/EvolutionChamber'
-						displayText: 'zergmissileweapons1'
+						displayText: 'Missle Weapons'
 			HydraliskDen:
 				icon: 'hydraliskden.jpg'
 				displayText: 'Hydralisk Den'
 				commands:
+					inherit: ['unit.cancel']
 					MuscularAugments:
 						icon: 'MuscularAugments.png'
 						hotkeyCode: 'MuscularAugments/HydraliskDen'
-						displayText: 'Muscular Augments'
+						displayText: 'Muscular Augments (Range)'
 					hydraliskspeed:
-						icon: 'hydraliskspeed.png'
+						icon: 'GroovedSpines.gif'
 						hotkeyCode: 'hydraliskspeed/HydraliskDen'
-						displayText: 'hydraliskspeed'
+						displayText: 'Grooved Spines (Speed)'
 			InfestationPit:
 				icon: 'infestationpit.jpg'
 				displayText: 'Infestation Pit'
 				commands:
+					inherit: ['unit.cancel']
 					EvolveInfestorEnergyUpgrade:
-						icon: 'EvolveInfestorEnergyUpgrade.png'
+						icon: 'PathogenGlands.gif'
 						hotkeyCode: 'EvolveInfestorEnergyUpgrade/InfestationPit'
-						displayText: 'Evolve Infestor Energy Upgrade'
+						displayText: 'Pathogen Glands'
 					ResearchLocustLifetimeIncrease:
-						icon: 'ResearchLocustLifetimeIncrease.png'
+						icon: 'IncreasedLocustLifetime.gif'
 						hotkeyCode: 'ResearchLocustLifetimeIncrease/InfestationPit'
-						displayText: 'Research Locust Lifetime Increase'
+						displayText: 'Enduring Locusts'
 					ResearchNeuralParasite:
-						icon: 'ResearchNeuralParasite.png'
+						icon: 'NeuralParasite.png'
 						hotkeyCode: 'ResearchNeuralParasite/InfestationPit'
 						displayText: 'Research Neural Parasite'
 			UltraliskCavern:
 				icon: 'ultraliskcavern.jpg'
 				displayText: 'Ultralisk Cavern'
 				commands:
-					EvolveBurrowCharge:
-						icon: 'EvolveBurrowCharge.png'
-						hotkeyCode: 'EvolveBurrowCharge'
-						displayText: 'Evolve Burrow Charge'
+					inherit: ['unit.cancel']
 					EvolveChitinousPlating:
-						icon: 'EvolveChitinousPlating.png'
+						icon: 'ChitinousPlating.gif'
 						hotkeyCode: 'EvolveChitinousPlating/UltraliskCavern'
 						displayText: 'Evolve Chitinous Plating'
 			BanelingNest:
 				icon: 'banelingnest.jpg'
 				displayText: 'Baneling Nest'
 				commands:
+					inherit: ['unit.cancel']
 					EvolveCentrificalHooks:
-						icon: 'EvolveCentrificalHooks.png'
+						icon: 'CentrifugalHooks.gif'
 						hotkeyCode: 'EvolveCentrificalHooks/BanelingNest'
-						displayText: 'Evolve Centrifical Hooks'
+						displayText: 'Centrifugal Hooks'
 			Spire:
 				icon: 'spire.jpg'
 				displayText: 'Spire'
 				commands:
+					inherit: ['unit.cancel']
 					BuildGreaterSpire:
 						icon: 'greaterspire.jpg'
 						hotkeyCode: 'GreaterSpire/Spire'
@@ -2356,38 +2235,45 @@ exports.raceCards = raceCards =
 						hotkeyCode: 'GreaterSpireBroodlord/Spire'
 						displayText: 'Greater Spire Broodlord'
 					zergflyerarmor1:
-						icon: 'zergflyerarmor1.png'
-						hotkeyCode: 'zergflyerarmor1/Spire'
-						displayText: 'zergflyerarmor1'
+						icon: 'FlyerCarapace1.gif'
+						hotkeyCode: 'zergflyerarmor1'
+						displayText: 'Flyer Carapace'
 					zergflyerattack1:
-						icon: 'zergflyerattack1.png'
-						hotkeyCode: 'zergflyerattack1/Spire'
-						displayText: 'zergflyerattack1'
+						icon: 'FlyerAttack1.gif'
+						hotkeyCode: 'zergflyerattack1'
+						displayText: 'Flyer Attacks'
 			GreaterSpire:
 				icon: 'greaterspire.jpg'
 				displayText: 'Greater Spire'
 				commands:
+					inherit: ['unit.cancel']
 					zergflyerarmor1:
-						icon: 'zergflyerarmor1.png'
-						hotkeyCode: 'zergflyerarmor1/GreaterSpire'
-						displayText: 'zergflyerarmor1'
+						icon: 'FlyerCarapace1.gif'
+						hotkeyCode: 'zergflyerarmor1'
+						displayText: 'Flyer Carapace'
 					zergflyerattack1:
-						icon: 'zergflyerattack1.png'
-						hotkeyCode: 'zergflyerattack1/GreaterSpire'
-						displayText: 'zergflyerattack1'
+						icon: 'FlyerAttack1.gif'
+						hotkeyCode: 'zergflyerattack1'
+						displayText: 'Flyer Attacks'
 			NydusNetwork:
 				icon: 'nydusnetwork.jpg'
 				displayText: 'Nydus Network'
 				commands:
+					inherit: ['unit.load', 'unit.cancel']
 					SummonNydusWorm:
-						icon: 'SummonNydusWorm.png'
+						icon: 'NydusWorm.jpeg'
 						hotkeyCode: 'SummonNydusWorm/NydusNetwork'
 						displayText: 'Summon Nydus Worm'
+					Stop:
+						icon: 'Stop.png'
+						hotkeyCode: 'Stop'
+						displayText: 'Stop'
 			CreepTumor:
 				icon: 'creeptumor.jpg'
 				displayText: 'Creep Tumor'
 				commands:
+					inherit: ['unit.cancel']
 					BuildCreepTumorPropagate:
-						icon: 'BuildCreepTumorPropagate.png'
-						hotkeyCode: 'BuildCreepTumorPropagate'
+						icon: 'SpawnCreepTumor.gif'
+						hotkeyCode: 'BuildCreepTumorPropagate/CreepTumorBurrowed'
 						displayText: 'Build Creep Tumor Propagate'

@@ -1,6 +1,6 @@
 # The Core Visualizer
 
-[See the live demo.](http://jakatak.github.io/thecorevisualizer/static/index.html)
+[See the live demo.](http://IvanVolosyuk.github.io/thecorevisualizer/visualizer)
 
 This is an interactive demo for StarCraft 2 hotkey layouts, designed around [The Core](http://www.teamliquid.net/forum/viewmessage.php?topic_id=341878). Written in CoffeeScript with CoffeeCup and Stylus.
 
@@ -70,6 +70,8 @@ The Probe also has a BuildBasic command that is mapped to the ``ProtossBuild/Pro
 To add new commands or units just make a new entry into the appropriate list and set all the values correctly. Everything else should be automatic. All units must have ``icon``, and ``commands`` defined. All commands must ``icon`` defined. All other attributes are optional. If ``displayText`` is not found, the unit/command name will be used instead. If ``on`` is not defined then nothing happens when the command is used. If ``if`` is not defined then the command is always shown.
 
 After you have updated the ``hotkeys.coffee`` file you need to recompile the coffee script and commit the changes. To do that you need to make sure to install [node.js](http://nodejs.org/download/)
+
+The compilation works only on Linux for me:
 
 ```bash
 $ NODE_PATH=src node coffeecup --output visualizer src/index.coffee
