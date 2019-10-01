@@ -838,30 +838,32 @@ ga('send', 'pageview');
 			coffeescript ->
 
 				window.TheCore = TheCore =
-					version: ''
+					version: '5.0'
 					layoutCodeToDisplayName:(code)->
 						"The Core #{code} #{@version} (#{@layoutRaces[code[0]]} #{@layoutSides[code[1]]}-Handed  #{@layoutSizes[code[2]]})"
 					layoutCodeToFileName:(code)->
-						"TheCore #{code} #{@version}.SC2Hotkeys"
+						"TheCore_#{code} #{@version}.SC2Hotkeys"
 
 				parts =
-					layoutRaces: 'Protoss Zerg Terran Random'.split ' '
+					layoutRaces: 'Random'.split ' '
 					layoutSides: 'Right Left'.split ' '
-					layoutSizes: 'Large Medium Small'.split ' '
+					layoutSizes: 'Medium'.split ' '
+          layoutComplexities: ['', 'Plus']
 				for kind, ones of parts
 					TheCore[kind] = {}
 					for each in ones
 						TheCore[kind][each[0]] = each
 
-				[races, sides, sizes] = (v for k,v of [TheCore.layoutRaces, TheCore.layoutSides, TheCore.layoutSizes])
-				TheCore.layoutCodes = $.map ("#{race}#{side}#{size}" for size of sizes for race of races for side of sides), (a)-> $.map a, (n)-> n
+				[races, sides, sizes, complexities] = (v for k,v of [TheCore.layoutRaces, TheCore.layoutSides, TheCore.layoutSizes, TheCore.layoutComplexities])
+				TheCore.layoutCodes = $.map ("#{race}#{side}#{size}#{complexity}" for size of sizes for race of races for side of sides for complexity of complexities), (a)-> $.map a, (n)-> n
 
 				$ ->
 					hand = race = null
 					layoutSize = 'medium'
+          layoutComplexity = ''
 					dismiss =->
 						c =(s)-> s[0].toUpperCase()
-						code = "#{c race}#{c hand}#{c layoutSize}"
+						code = "#{c race}#{c hand}#{c layoutSize}#{c layoutComplexity}"
 						$('select.hotkey-file').val(TheCore.layoutCodeToDisplayName(code)).change()
 						$('.tutorial-overlay').click()
 
@@ -883,7 +885,7 @@ ga('send', 'pageview');
 							do dismiss
 		div '.footer', ->
 			a '.show-tutorial', -> 'Show Tutorial'
-			a href:'https://github.com/IvanVolosyuk/thecorevisualizer', target: 'blank', -> 'About'
+			a href:'https://github.com/JaKaTaK/thecorevisualizer', target: 'blank', -> 'About'
 			coffeescript ->
 				$('.footer .show-tutorial').on 'click', -> $('.tutorial,.tutorial-overlay').show()
 
@@ -937,16 +939,16 @@ ga('send', 'pageview');
 					path = "#{prefix}#{TheCore.layoutCodeToFileName(code)}"
 					loadHotkeysFile TheCore.layoutCodeToDisplayName(code), path
 
-				if keyboard is 'USQwerty'
-					loadHotkeysFile "The Core Lite", 'others/TheCore Lite.SC2Hotkeys'
-					loadHotkeysFile "The Chameleon", 'others/Chameleon 2.0.SC2Hotkeys'
-					loadHotkeysFile "HotS Standard", 'others/Standard.SC2Hotkeys'
+				# if keyboard is 'US Qwerty'
+				# 	loadHotkeysFile "The Core Lite", 'others/TheCore Lite.SC2Hotkeys'
+				# 	loadHotkeysFile "The Chameleon", 'others/Chameleon 2.0.SC2Hotkeys'
+				# 	loadHotkeysFile "HotS Standard", 'others/Standard.SC2Hotkeys'
 
 
-			TheCore.currentKeyboard = if (val = $.fn.cookie('keyboard-layout-val')) in "USQwerty USDvorak FrenchAzerty German USColemak".split ' '
+			TheCore.currentKeyboard = if (val = $.fn.cookie('keyboard-layout-val')) in "US Qwerty.US Dvorak.French Azerty.Germany.US Colemak.Latin America and Spain.Portugal.QGMLWB.QGMLWY.Scandinavia.Switzerland.UK Colemak.UK Qwerty".split '.'
 				val
 			else
-				'USQwerty'
+				'US Qwerty'
 			console.log 'Loading keyboard', TheCore.currentKeyboard
 			TheCore.loadTheCoreForKeyboard TheCore.currentKeyboard
 

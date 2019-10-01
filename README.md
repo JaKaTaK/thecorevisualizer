@@ -1,6 +1,6 @@
 # The Core Visualizer
 
-[See the live demo.](http://IvanVolosyuk.github.io/thecorevisualizer/visualizer)
+[See the live demo.](http://jakatak.github.io/thecorevisualizer/visualizer)
 
 This is an interactive demo for StarCraft 2 hotkey layouts, designed around [The Core](http://www.teamliquid.net/forum/viewmessage.php?topic_id=341878). Written in CoffeeScript with CoffeeCup and Stylus.
 
