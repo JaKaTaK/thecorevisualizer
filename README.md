@@ -1,4 +1,3 @@
-# The Core Visualizer
 
 [See the live demo.](http://IvanVolosyuk.github.io/thecorevisualizer/visualizer)
 
@@ -79,3 +78,22 @@ $ git add src/hotkeys.coffee visualizer/index.html
 $ git commit -m "Fixed hotkey file entries...."
 $ git push
 ```
+
+
+### Simple redirect
+
+Put this inside an index html that your are serving on your lading page.
+This will result in the user being forwared to the new url location 
+``` html
+The Core Visualizer has moved.
+
+http://jakatak.github.io/thecorevisualizer/visualizer/
+<script>window.location = 'http://jakatak.github.io/thecorevisualizer/visualizer/';</script>
+```
+
+# Help with the Refactoring
+There is a lot that has to be done here.
+We would like to move the project to react with redux. So that hopefully we can get more people maintaining the project.
+
+So far i was able to get some of the keymaps working inside of react.
+For additional ideas to make the migration easier please send speak up :)
