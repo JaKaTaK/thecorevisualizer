@@ -1,0 +1,2 @@
+Not sure why but global jest does not work to run the test.
+If you do the normal npm test or npm t for short everything works as expected
